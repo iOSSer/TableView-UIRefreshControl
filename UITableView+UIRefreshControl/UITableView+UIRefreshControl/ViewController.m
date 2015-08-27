@@ -21,24 +21,19 @@
     [super viewDidLoad];
     
     _tableView = [[UITableView alloc] initWithFrame:self.view.bounds style:UITableViewStylePlain];
-    
+    _tableView.delegate = self;
+    _tableView.dataSource = self;
+    [_tableView registerClass:[UITableViewCell class] forCellReuseIdentifier:@"111"];
     
     _refreshControl = [[UIRefreshControl alloc] init];
     _refreshControl.tintColor = self.view.tintColor;
     [_refreshControl addTarget:self action:@selector(refreshData) forControlEvents:UIControlEventValueChanged];
     
-    //function 1
-    //[_tableView addSubview:_refreshControl];
-    //[self.view addSubview:_tableView];
-    
-    //functoin 2
-    //_tableView.hidden = YES;
-    
     UITableViewController *tableVC = [[UITableViewController alloc] initWithStyle:UITableViewStylePlain];
     tableVC.refreshControl = _refreshControl;
     [self addChildViewController:tableVC];
-    _tableView = tableVC.tableView;
-    [self.view addSubview:_tableView];
+     tableVC.tableView = _tableView;
+    [self.view addSubview:tableVC.tableView];
 //    [self.view addSubview:tableVC.tableView];
 }
 
@@ -57,4 +52,16 @@
     // Dispose of any resources that can be recreated.
 }
 
+- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
+{
+    return 10;
+}
+
+- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"111" forIndexPath:indexPath];
+    cell.textLabel.text = [NSString stringWithFormat:@"%ld", indexPath.row];
+    cell.selectedBackgroundView = [[UIView alloc] initWithFrame:cell.contentView.bounds];
+    return cell;
+}
 @end
